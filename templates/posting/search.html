@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h4>Hasil pencarian untuk: "{{ query }}"</h4>
+  {% if hasil %}
+    {% for post in hasil %}
+      <div class="card my-3">
+        <div class="card-body">
+          <h5><a href="{% url 'detail' post.pk %}">{{ post.judul }}</a></h5>
+          <p>{{ post.konten|truncatewords:25|safe }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Tidak ditemukan hasil.</p>
+  {% endif %}
+</div>
+{% endblock %}

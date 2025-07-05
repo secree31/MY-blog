@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .card {
+    border: 1px solid orangered;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px orange;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px orange;
+  }
+
+  .card-img-top {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: block;
+  }
+
+  .card-body {
+    padding: 1.25rem;
+  }
+
+  .card-title {
+    margin-top: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    background-color: #3b82f6;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+
+  .card-text-wrapper {
+    background-color: #fff3cd;
+    padding: 15px 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    line-height: 1.8;
+    color: #222;
+    text-align: justify;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  }
+
+  .btn-outline-primary {
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-weight: 500;
+    transition: 0.3s ease;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: orange;
+  }
+
+  .full-content {
+    display: none;
+  }
+
+  @media (max-width: 576px) {
+    .card {
+      width: 100%;
+    }
+
+    .card-img-top {
+      aspect-ratio: 16 / 9;
+      height: auto;
+    }
+  }
+</style>
+
+<div class="container mt-4">
+  {% for post in postings %}
+  <div class="card mb-4">
+    {% if post.img %}
+    <img src="{{ post.img.url }}" class="card-img-top" alt="{{ post.judul|default:'Image' }}" loading="lazy">
+    {% endif %}
+    <div class="card-body">
+      <small class="text-muted">{{ post.date|date:"F d, Y, H:i" }}</small>
+      <h5 class="card-title mt-2">{{ post.judul }}</h5>
+
+      <div class="card-text-wrapper">
+        <div id="preview-{{ forloop.counter }}">
+          {{ post.konten|truncatewords_html:30|safe }}...
+        </div>
+        <div class="full-content" id="full-{{ forloop.counter }}">
+          {{ post.konten|safe }}
+        </div>
+
+        {% if post.konten|wordcount > 30 %}
+        <button 
+          class="btn btn-sm btn-outline-primary toggle-btn" 
+          data-id="{{ forloop.counter }}"
+          aria-expanded="false">
+          More
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.toggle-btn');
+    buttons.forEach(button => {
+      button.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        const preview = document.getElementById('preview-' + id);
+        const full = document.getElementById('full-' + id);
+
+        const isExpanded = full.style.display === 'block';
+
+        full.style.display = isExpanded ? 'none' : 'block';
+        preview.style.display = isExpanded ? 'block' : 'none';
+        this.innerText = isExpanded ? 'More' : 'Less';
+        this.setAttribute('aria-expanded', !isExpanded);
+      });
+    });
+  });
+</script>
+{% endblock %}
+
+
+
+
+
+
+
